@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <link rel="stylesheet" href="../css/notieboard.css">
+    <link rel="icon" href="../img/favicon.png">
+    <title>피지오닉스</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header">
+
+        <!-- Logo -->
+        <h1><a href="../">Physionics</a></h1>
+
+        <!-- Nav -->
+        <nav id="nav">
+            <ul>
+                <li><a href="../">HOME</a></li>
+                <li><a href="../media/">MEDIA</a></li>
+                <li><a href="../specification/">SPECIFICATION</a></li>
+                <li class="current"><a href="../noticeboard/">NOTICE BOARD</a></li>
+                <li><a href="../contact/">CONTACT</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Body -->
+    <div id="body"></div>
+    <div id="pagination"></div>
+
+    <!-- Footer -->
+    <div id="footer">
+        <pre>
+    Physiological Signal Processing & Measurement Solution, Tactile Sensor System for Sensitive Gripping
+    
+    AFE & ROIC Semiconductor Design, Research & Development Service
+    
+    
+    
+    Office : 406ho, IT Venture Town, 35, Techno 9-ro, Yuseong-gu, Daejeon, 34027, Republic of Korea
+    
+    Factory : 507ho, 27, Gohwa-ro 9beon-gil, Paldal-gu, Suwon-si, Gyeonggi-do, 16456, Republic of Korea
+    
+    
+    
+    TEL +82-42-867-7880   FAX +82-42-367-0886
+    
+    
+    
+    COPYRIGHT© 2024 PHYSIONICS. ALL RIGHT RESERVED.
+        </pre>
+    </div>
+</body>
+
+</html>
+<script>
+    const files = [
+        "20250122_1.html", "20250122.html", "20241212.html", "20241206.html", "20241128_3.html",
+        "20241128_2.html", "20241128_1.html", "20241128.html", "20241121_1.html", "20241121.html",
+        "20241113_2.html", "20241113_1.html", "20241106.html", "20241105.html", "20241001_5.html",
+        "20241001_4.html", "20241001_3.html", "20241001_2.html", "20241001_1.html", "20240814.html", "20240813.html"
+    ];
+
+    let currentIndex = 0; // 현재 로드된 파일의 인덱스
+
+    // 파일을 5개씩 로드하는 함수
+    async function loadFiles(startIndex) {
+        const parentDiv = document.getElementById("body");
+        if (!parentDiv) {
+            console.error('id가 "body"인 div를 찾을 수 없습니다.');
+            return;
+        }
+
+        // startIndex부터 5개씩 로드
+        const endIndex = Math.min(startIndex + 5, files.length); // 배열 끝을 넘지 않도록 제한
+        for (let index = startIndex; index < endIndex; index++) {
+            try {
+                const response = await fetch(files[index]);
+                const data = await response.text();
+
+                const newDiv = document.createElement('div');
+                newDiv.id = `content${index + 1}`;
+                newDiv.classList.add("content_test");
+                newDiv.innerHTML = data;
+
+                parentDiv.appendChild(newDiv);
+            } catch (error) {
+                console.log('HTML 파일 로드 오류:', error);
+            }
+        }
+    }
+
+    // 페이지네이션 버튼 생성
+    function createPaginationButtons() {
+        const totalPages = Math.ceil(files.length / 5); // 총 페이지 수
+        const paginationDiv = document.getElementById("pagination");
+        if (!paginationDiv) {
+            console.error('id가 "pagination"인 div를 찾을 수 없습니다.');
+            return;
+        }
+
+        // 페이지 수만큼 숫자 버튼 생성
+        for (let page = 0; page < totalPages; page++) {
+            const pageButton = document.createElement("button");
+            pageButton.innerText = page + 1;
+            pageButton.classList.add("pageButton");
+            pageButton.onclick = function () {
+                loadPage(page);
+                setActivePageButton(pageButton); // 클릭한 버튼에 활성화 스타일 적용
+            };
+
+            // hover 이벤트 추가 (마우스를 올렸을 때 스타일 변경)
+            pageButton.onmouseenter = function () {
+                pageButton.style.border = "1px solid #f0f0f0"; // hover 배경색
+            };
+            pageButton.onmouseleave = function () {
+                if (!pageButton.classList.contains("active")) {
+                    pageButton.style.border = ""; // 선택되지 않은 버튼은 기본 스타일로
+                }
+            };
+
+            paginationDiv.appendChild(pageButton);
+        }
+    }
+
+    // 특정 페이지 로드
+    function loadPage(pageNumber) {
+        currentIndex = pageNumber * 5;
+        document.getElementById("body").innerHTML = ""; // 기존 콘텐츠 삭제
+        loadFiles(currentIndex);
+    }
+
+    // 클릭된 버튼에 스타일을 적용하여 활성화시키는 함수
+    function setActivePageButton(button) {
+        // 모든 버튼을 기본 스타일로 되돌리기
+        const allButtons = document.querySelectorAll("#pagination button");
+        allButtons.forEach(btn => {
+            btn.classList.remove("active"); // "active" 클래스 제거
+            btn.style.border = ""; // 배경색 초기화
+            btn.style.color = ""; // 글자 색 초기화
+        });
+
+        // 클릭된 버튼에 "active" 클래스와 스타일 적용
+        button.classList.add("active");
+        button.style.border = "1px solid #f0f0f0";
+        button.style.color = "red"; // 선택된 버튼 글자색
+        button.style.cursor = "default";
+    }
+
+    // 페이지 로드 시 초기 설정
+    window.onload = function () {
+        loadFiles(0); // 첫 번째 페이지 로드
+        createPaginationButtons(); // 숫자 버튼 생성
+
+        // 첫 번째 버튼을 자동으로 활성화
+        const firstButton = document.querySelector("#pagination button");
+        if (firstButton) {
+            setActivePageButton(firstButton); // 첫 번째 버튼에 활성화 스타일 적용
+        }
+    };
+
+
+</script>
