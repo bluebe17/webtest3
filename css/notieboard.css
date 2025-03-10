@@ -97,20 +97,12 @@ body{
 	padding-top: 70px;
 	padding-bottom: 70px;
 }
-#pagination{
+#loadMoreContainer{
 	margin: 0 auto;
 	width:1200px;
 	height: auto;
-	text-align: center;
+	text-align: right;
 }
-.pageButton{
-	display: inline-block;
-	width: 30px;
-	height: 30px;
-	margin-right: 5px;
-	background-color: #ffffff;
-	border: none;
-}
-.pageButton:hover{
+#loadMoreButton{
 	cursor: pointer;
 }
